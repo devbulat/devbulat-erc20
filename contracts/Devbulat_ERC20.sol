@@ -21,7 +21,7 @@ contract DevbulatERC20 {
          _decimals = tokenDecimals;
     }
 
-    function mint(address recipient, uint256 amount) public {
+    function mint(address recipient, uint256 amount) external {
         require(_owner == msg.sender, "You are not owner");
         require(recipient != address(0), "Can't mint to zero address");
         require(amount != 0, "Can't mint zero amount");
@@ -32,7 +32,7 @@ contract DevbulatERC20 {
         emit Transfer(address(0), recipient, amount);
     }
 
-    function burn(address recipient, uint256 amount) public {
+    function burn(address recipient, uint256 amount) external {
         require(_owner == msg.sender, "You are not owner");
         require(recipient != address(0), "Can't burn from zero address");
         require(amount != 0, "Can't burn zero amount");
@@ -43,7 +43,7 @@ contract DevbulatERC20 {
         emit Transfer(recipient, address(0), amount);
     }
 
-    function transfer(address recipient, uint256 amount ) public {
+    function transfer(address recipient, uint256 amount ) external {
         require(amount <= _balances[msg.sender], "Not enough tokens");
         require(recipient != address(0), "Can't transfer to zero address");
         require(amount != 0, "Can't transfer zero amount");
@@ -52,7 +52,7 @@ contract DevbulatERC20 {
         _balances[recipient] += amount;
     }
 
-    function transferFrom(address sender, address recipient, uint256 amount ) public {
+    function transferFrom(address sender, address recipient, uint256 amount ) external {
         require(amount <= allowance(sender, recipient), "Not approved");
         require(amount <= _balances[sender], "Not enough tokens");
         require(sender != address(0), "Can't transfer from zero address");
@@ -64,21 +64,21 @@ contract DevbulatERC20 {
         _allowances[sender][recipient] -= amount;
     }
 
-    function approve(address spender, uint256 amount ) public {
+    function approve(address spender, uint256 amount ) external {
         require(spender != address(0), "Can't add allowance to zero address");
         require(amount != 0, "Can't add allowance for zero amount");
 
         _allowances[msg.sender][spender] = amount;
     }
 
-    function increaseAllowance(address spender, uint256 amount ) public {
+    function increaseAllowance(address spender, uint256 amount ) external {
         require(spender != address(0), "Can't increase allowance to zero address");
         require(amount != 0, "Can't increase allowance with zero amount");
 
         _allowances[msg.sender][spender] += amount;
     }
 
-    function decreaseAllowance(address spender, uint256 amount ) public {
+    function decreaseAllowance(address spender, uint256 amount ) external {
         require(spender != address(0), "Can't decrease allowance to zero address");
         require(amount != 0, "Can't decrease allowance with zero amount");
 
@@ -92,23 +92,23 @@ contract DevbulatERC20 {
         return _allowances[owner][spender];
     }
 
-    function name() public view returns (string memory) {
+    function name() external view returns (string memory) {
         return _name;
     }
 
-    function symbol() public view returns (string memory) {
+    function symbol() external view returns (string memory) {
         return _symbol;
     }
 
-    function decimals() public view returns (uint256) {
+    function decimals() external view returns (uint256) {
         return _decimals;
     }
 
-    function balanceOf(address user) public view returns (uint256) {
+    function balanceOf(address user) external view returns (uint256) {
         return _balances[user];
     }
 
-    function totalSupply() public view returns (uint256) {
+    function totalSupply() external view returns (uint256) {
         return _totalSupply;
     }
 }
