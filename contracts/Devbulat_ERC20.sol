@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 import "hardhat/console.sol";
 
+
 contract DevbulatERC20 {
     address private _owner;
     string private _name;
@@ -11,31 +12,41 @@ contract DevbulatERC20 {
     uint256 private _totalSupply;
     mapping (address => uint) private _balances;
     mapping (address => mapping (address => uint)) private _allowances;
+    event Transfer(address indexed from, address indexed to, uint value);
 
     constructor(string memory tokenName, string memory tokenSymbol, uint256 tokenDecimals) {
          _owner = msg.sender;
          _name = tokenName;
          _symbol = tokenSymbol;
          _decimals = tokenDecimals;
-         _totalSupply = 0;
     }
 
     function mint(address recipient, uint256 amount) public {
         require(_owner == msg.sender, "You are not owner");
+        require(recipient != address(0), "Can't mint to zero address");
+        require(amount != 0, "Can't mint zero amount");
 
         _balances[recipient] += amount;
         _totalSupply += amount;
+        
+        emit Transfer(address(0), recipient, amount);
     }
 
     function burn(address recipient, uint256 amount) public {
         require(_owner == msg.sender, "You are not owner");
-        
+        require(recipient != address(0), "Can't burn from zero address");
+        require(amount != 0, "Can't burn zero amount");
+
         _balances[recipient] -= amount;
         _totalSupply -= amount;
+
+        emit Transfer(recipient, address(0), amount);
     }
 
     function transfer(address recipient, uint256 amount ) public {
         require(amount <= _balances[msg.sender], "Not enough tokens");
+        require(recipient != address(0), "Can't transfer to zero address");
+        require(amount != 0, "Can't transfer zero amount");
 
         _balances[msg.sender] -= amount;
         _balances[recipient] += amount;
@@ -44,6 +55,9 @@ contract DevbulatERC20 {
     function transferFrom(address sender, address recipient, uint256 amount ) public {
         require(amount <= allowance(sender, recipient), "Not approved");
         require(amount <= _balances[sender], "Not enough tokens");
+        require(sender != address(0), "Can't transfer from zero address");
+        require(recipient != address(0), "Can't transfer to zero address");
+        require(amount != 0, "Can't transfer zero amount");
 
         _balances[sender] -= amount;
         _balances[recipient] += amount;
@@ -51,18 +65,30 @@ contract DevbulatERC20 {
     }
 
     function approve(address spender, uint256 amount ) public {
+        require(spender != address(0), "Can't add allowance to zero address");
+        require(amount != 0, "Can't add allowance for zero amount");
+
         _allowances[msg.sender][spender] = amount;
     }
 
     function increaseAllowance(address spender, uint256 amount ) public {
+        require(spender != address(0), "Can't increase allowance to zero address");
+        require(amount != 0, "Can't increase allowance with zero amount");
+
         _allowances[msg.sender][spender] += amount;
     }
 
     function decreaseAllowance(address spender, uint256 amount ) public {
+        require(spender != address(0), "Can't decrease allowance to zero address");
+        require(amount != 0, "Can't decrease allowance with zero amount");
+
         _allowances[msg.sender][spender] = amount > _allowances[msg.sender][spender] ? 0 : _allowances[msg.sender][spender] - amount;
     }
 
     function allowance(address owner, address spender) public view returns (uint256) {
+        require(owner != address(0), "Can't add allowance for zero owners address");
+        require(spender != address(0), "Can't add allowance for zero spenders address");
+
         return _allowances[owner][spender];
     }
 
